@@ -1,0 +1,8 @@
+{% extends 'app.twig' %}
+
+{% block content %}
+  <h1>Erfolgreich</h1>
+  <p>Du hast du erfolgreich angemeldet.</p>
+  <a href="{{ path_for('auth.logout') }}">Logout</a>
+
+{% endblock %}

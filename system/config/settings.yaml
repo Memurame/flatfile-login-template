@@ -1,0 +1,25 @@
+title: 'Flatlogin'
+theme: 'default'
+main:
+  from: 'mail@mail.ch'
+  from_name: FIRMA
+  host: ''
+  pass: ''
+  port: 465
+  smtp:
+    auth: 1
+    secure: ssl
+  type: sendmail
+  user: ''
+slim:
+  error_details: true
+twig:
+  cache:
+    enabled: false
+secure:
+  ip:
+    enabled: false
+    allowed:
+      - '::1'
+  ssl:
+    force: false

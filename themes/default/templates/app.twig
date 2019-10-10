@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" type="image/png" href="{{ theme_url }}/images/favicon.png">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="{{ theme_url }}/build/css/flatlogin.min.css?v={{ date().timestamp }}">
+  <title>{{ setting.sys.system.title }}</title>
+</head>
+
+<body>
+
+
+{% block content %}{% endblock %}
+
+
+
+<script type="text/javascript" src="{{ theme_url }}/build/js/flatlogin.core.min.js?v={{ date().timestamp }}"></script>
+<script type="text/javascript" src="{{ theme_url }}/build/js/flatlogin.app.min.js?v={{ date().timestamp }}"></script>
+
+</body>
+</html>

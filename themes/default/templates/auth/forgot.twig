@@ -1,0 +1,18 @@
+{% extends 'auth/app.twig' %}
+
+{% block content %}
+  <div class="login-form">
+    <form method="post">
+      {{ csrf.field | raw }}
+      <h2 class="text-center">Passwort vergessen</h2>
+      <div class="form-group has-error">
+        <input type="text" class="form-control" name="username" placeholder="Benutzername" required="required">
+      </div>
+      <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Zurücksetzen</button>
+      </div>
+    </form>
+    <p class="text-center small"><a href="{{ path_for('auth.login') }}">zurück zum Login</a></p>
+  </div>
+
+{% endblock %}
