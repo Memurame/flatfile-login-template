@@ -3,7 +3,6 @@
 namespace App\Auth;
 
 use App\Controllers\Controller;
-use App\Models\Accounts;
 
 class Auth
 {
@@ -92,6 +91,14 @@ class Auth
     return $this->reset_db;
   }
 
+  public function updateAuthToken(){
+    $this->token->token = $this->createToken(64);
+    $this->token->save();
+
+    setcookie($this->cookie_name . '_token', $this->token->token, time()+86400*365, '/', $_SERVER['HTTP_HOST']);
+
+  }
+
   /**
    * @return bool
    */
@@ -102,7 +109,7 @@ class Auth
       $token = $this->token_db->get($_COOKIE[$this->cookie_name . '_identifier']);
 
       if($token->token == $_COOKIE[$this->cookie_name . '_token']){
-        return $token->token;
+        return $token;
       }
     }
     return false;
@@ -142,8 +149,6 @@ class Auth
    * @throws \Exception
    */
   public function login($username, $password){
-
-
 
     $user = $this->user_db->where(['username' => $username])->first();
     if (!$user && !isset($error)) {
@@ -201,30 +206,40 @@ class Auth
    */
   public function check($lvl = 'user'){
 
+    $return['success'] = false;
+    $return['reason'] = 'ERROR';
+
     $this->token = $this->getAuthToken();
     /*
      * Prüft ob ein Token vorhanden ist
      */
-    if(!$this->token && !isset($error)){
-      $error = 'NOTOKEN';
+    if(!$this->token){
+      $return['reason'] = 'NOTOKEN';
+      $this->logout();
+      return $return;
     }
 
-    if(!isset($error)){
-      if($lvl == 'admin'){
-        if($this->user->role == 'admin'){
-          $return['success'] = true;
-          return $return;
-        }
-      } else {
+    if(strtotime($this->token->updatedAt()) < time() - $this->cookie_lifetime){
+      $return['reason'] = 'EXPIRED';
+      $this->logout();
+      return $return;
+    } else {
+      $this->updateAuthToken();
+    }
+
+    if($lvl == 'admin'){
+      if($this->user->role == 'admin'){
         $return['success'] = true;
         return $return;
+      } else {
+        $return['reason'] = 'NOPERMISSION';
+        $this->logout();
+        return $return;
       }
+    } else {
+      $return['success'] = true;
+      return $return;
     }
-
-    $this->logout();
-    $return['success'] = false;
-    $return['reason'] = (isset($error)) ? $error : 'ERROR';
-    return $return;
   }
 
   /**

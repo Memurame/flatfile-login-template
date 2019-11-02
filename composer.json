@@ -11,11 +11,10 @@
         "slim/twig-view": "^2.3",
         "respect/validation": "^1.0",
         "slim/csrf": "^0.6.0",
-        "slim/flash": "^0.1.0",
         "phpmailer/phpmailer": "^6.0",
         "symfony/yaml": "^4.2",
         "tmarois/filebase": "^1.0",
-        "peppeocchi/php-cron-scheduler": "^2.4"
+        "lavary/crunz": "^2.0"
     },
     "autoload": {
         "psr-4": {

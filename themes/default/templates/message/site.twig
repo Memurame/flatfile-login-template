@@ -1,0 +1,12 @@
+{% extends 'app.twig' %}
+
+{% block content %}
+
+  <div class="alert alert-{{ text.type }}">
+    <p class="mb-0">{{ text.message | raw }}</p>
+  </div>
+
+
+
+
+{% endblock %}

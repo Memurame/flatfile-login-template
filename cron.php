@@ -4,11 +4,12 @@ require_once realpath(__DIR__ ) . '/system/define.php';
 
 require_once realpath(__DIR__ ) . '/vendor/autoload.php';
 
-use GO\Scheduler;
+use Crunz\Schedule;
 
-$scheduler = new Scheduler();
 
-$scheduler->php(PATH_ROOT . DIR_SYSTEM . 'cronjobs/email.php');
+$schedule = new Schedule();
+$task = $schedule->run(PHP_BINARY . ' ' . PATH_ROOT . DIR_SYSTEM . 'cronjobs/email.php');
+$task->everyMinute();
 
-$scheduler->run();
+return $schedule;
 

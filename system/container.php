@@ -57,10 +57,6 @@ $container['auth'] = function($container) {
   return $auth;
 };
 
-$container['flash'] = function($container) {
-  return new \Slim\Flash\Messages;
-};
-
 
 $container['view'] = function ($container) {
   $settings = $container->config;
@@ -74,7 +70,7 @@ $container['view'] = function ($container) {
   $view->addExtension(new \Slim\Views\TwigExtension($container->router, $container->request->getUri()));
 
   if(!$settings['backgroundTask']){
-    $view->getEnvironment()->addGlobal('flash', $container->flash);
+    $view->getEnvironment()->addGlobal('message', $container->message);
     $view->getEnvironment()->addGlobal('theme_url', $settings['url']['public'] . DS . DIR_THEME . $settings['sys']['system']['theme']);
   }
 
@@ -87,6 +83,10 @@ $container['view'] = function ($container) {
 
 $container['validator'] = function ($container) {
   return new App\Validation\Validator;
+};
+
+$container['message'] = function ($container) {
+  return new App\Message\Message($container);
 };
 
 $container['HomeController'] = function($container) {

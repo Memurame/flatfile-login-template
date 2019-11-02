@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\Controller;
+use Crunz\Schedule;
 use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
@@ -29,7 +30,7 @@ class AuthController extends Controller
     );
 
     if (! $auth['success']) {
-      $this->flash->addMessage('error', 'Die Login Daten sind nicht korrekt!');
+      $this->message->addInline('danger', 'Die Login Daten sind nicht korrekt!');
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
 
@@ -74,7 +75,7 @@ class AuthController extends Controller
       $this->mailer->addToQueue($user['email'], 'forgot', $sys['url']['host'] . $this->router->pathFor('auth.reset', ['token' => $token]));
     }
 
-    $this->flash->addMessage('success', 'Sollte ein Account mit dieser Adresse vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.');
+    $this->message->addInline('info', 'Sollte ein Account mit dieser Adresse vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.');
     return $response->withRedirect($this->router->pathFor('auth.forgot'));
 
   }
@@ -100,8 +101,6 @@ class AuthController extends Controller
       if ($validation->failed()) {
         return $response->withRedirect($this->router->pathFor('auth.register'));
       }
-
-
     }
 
     return $response->withRedirect($this->router->pathFor('auth.login'));
@@ -110,7 +109,7 @@ class AuthController extends Controller
   public function getReset($request, $response, $args)
   {
     if(!$this->auth->allowedToResetPassword($args['token'])){
-      $this->flash->addMessage('error', 'Keine Berechtigung zum Passwort zurücksetzen.');
+      $this->message->addFlash('error', 'Keine Berechtigung zum Passwort zurücksetzen.');
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
 
@@ -119,11 +118,13 @@ class AuthController extends Controller
 
   public function postReset($request, $response, $args)
   {
+    // Wenn das Token korrekt ist
     $reset = $this->auth->allowedToResetPassword($args['token']);
     if(!$reset){
       return $response->withRedirect($this->router->pathFor('auth.forget'));
     }
 
+    // Prüfen ob ein neues Passwort eingegeben wurde
     $validation = $this->validator->validate($request, [
       'password' => v::noWhitespace()->notEmpty()
     ]);
@@ -132,22 +133,30 @@ class AuthController extends Controller
       return $response->withRedirect($this->router->pathFor('auth.reset', ['token' => $args['token']]));
     }
 
+    // Prüfen ob der User zum Token noch existiert oder nicht
+    // Wenn dieser nicht existiert, abbrechen.
     $user = $this->auth->user($reset->userid);
 
     if(!$user){
       return $response->withRedirect($this->router->pathFor('auth.forget'));
     }
 
+    // Neues Passwort verschlüsseln
     $password = $this->auth->createHash($request->getParam('password'));
 
+    // E-Mail Benachrichtigung wer warteschlange hinzufügen
     $this->mailer->addToQueue($user->email, 'password');
 
+    // Neues und verschlüsseltes Passwort speichern
     $user->password_hash = $password;
     $user->save();
 
+    // Token das zum ändern des Passwortes berechtigt löschen
     $this->auth->getResetDB()->where(['userid' => $user->userid])->delete();
 
-    $this->flash->addMessage('success', 'Dein Passwort wurde geändert.');
+    // Meldung anzeigen und alle Sessions des users löschen,
+    // anschliessend auf die Login seite leiten
+    $this->message->addInline('success', 'Dein Passwort wurde geändert.');
     $this->auth->deleteAllUserToken($user->userid);
     return $response->withRedirect($this->router->pathFor('auth.login'));
   }

@@ -1,0 +1,5 @@
+{% for message in message.getMessages('flash') %}
+    <div class="alert alert-{{ message.type }}">
+        {{ message.text }}
+    </div>
+{% endfor %}

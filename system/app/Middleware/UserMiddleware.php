@@ -9,8 +9,8 @@ class UserMiddleware extends Middleware
 	{
         $check = $this->container->auth->check();
         if(!$check['success']) {
-            if($check['msg'] == 'EXPIRED'){
-                $this->container->flash->addMessage('error', 'Du wurdes aufgrund Inaktivität ausgeloggt.');
+            if($check['reason'] == 'EXPIRED'){
+                $this->container->message->addInline('error', 'Du wurdes aufgrund Inaktivität ausgeloggt.');
             }
             return $response->withRedirect($this->container->router->pathFor('auth.login'));
         }
