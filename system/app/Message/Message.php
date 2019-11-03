@@ -39,7 +39,7 @@ class Message
     ];
   }
   public function write($type, $message){
-    $this->renderMessage([
+    return $this->renderMessage([
       'type' => $type,
       'text' => $message
     ]);

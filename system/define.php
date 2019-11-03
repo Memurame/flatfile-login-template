@@ -7,7 +7,7 @@ define('VERSION', '1.0.0');
 define('DS', '/');
 
 if (!defined('PATH_ROOT')) {
-  define('PATH_ROOT', str_replace(DIRECTORY_SEPARATOR, DS, realpath(__DIR__ . '../../')) . '/');
+  define('PATH_ROOT', str_replace(DIRECTORY_SEPARATOR, DS, realpath(__DIR__ . '/../')) . '/');
 }
 
 define('DIR_TEMP', 'tmp/');

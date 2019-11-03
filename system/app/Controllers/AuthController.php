@@ -75,7 +75,7 @@ class AuthController extends Controller
       $this->mailer->addToQueue($user['email'], 'forgot', $sys['url']['host'] . $this->router->pathFor('auth.reset', ['token' => $token]));
     }
 
-    $this->message->addInline('info', 'Sollte ein Account mit dieser Adresse vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.');
+    $this->message->addInline('info', 'Sollte ein Account mit diesem Benutzernamen vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.');
     return $response->withRedirect($this->router->pathFor('auth.forgot'));
 
   }
@@ -109,7 +109,8 @@ class AuthController extends Controller
   public function getReset($request, $response, $args)
   {
     if(!$this->auth->allowedToResetPassword($args['token'])){
-      $this->message->addFlash('error', 'Keine Berechtigung zum Passwort zurücksetzen.');
+
+      $this->message->addInline('danger', 'Keine Berechtigung zum Passwort zurücksetzen.');
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
 

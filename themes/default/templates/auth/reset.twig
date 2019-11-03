@@ -5,6 +5,7 @@
     <form method="post">
       {{ csrf.field | raw }}
       <h2 class="text-center">Passwort zurücksetzen</h2>
+      {% include 'message/inline.twig' %}
       <div class="form-group has-error">
         <input type="text" class="form-control" name="password" placeholder="Neues Passwort" required="required">
       </div>

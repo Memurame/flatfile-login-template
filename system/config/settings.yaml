@@ -1,6 +1,8 @@
-title: 'Flatlogin'
-theme: 'default'
-main:
+system:
+  title: 'Flatlogin'
+  theme: 'default'
+  register: true
+mail:
   from: 'mail@mail.ch'
   from_name: FIRMA
   host: ''
@@ -11,8 +13,6 @@ main:
     secure: ssl
   type: sendmail
   user: ''
-slim:
-  error_details: true
 twig:
   cache:
     enabled: false
@@ -23,3 +23,10 @@ secure:
       - '::1'
   ssl:
     force: false
+  captcha:
+    enabled: false
+    type: '2v'
+    url: url
+    key:
+      private: 'PRIVATEKEY'
+      public: 'PUBLICKEY'
