@@ -10,7 +10,7 @@ class AuthController extends Controller
 {
 	public function getLogin($request, $response)
   {
-      return $this->view->render($response, 'auth/login.twig');
+    return $this->view->render($response, 'auth/login.twig');
   }
 
   public function postLogin($request, $response){
@@ -30,6 +30,12 @@ class AuthController extends Controller
     );
 
     if (! $auth['success']) {
+      if($auth['reason'] == 'PASSWORD'){
+        die('Falsches Password');
+      } elseif($auth['reason'] == 'BLOCKED'){
+        die('Account ist nun gesperrt');
+      }
+
       $this->message->addInline('danger', 'Die Login Daten sind nicht korrekt!');
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
@@ -45,6 +51,10 @@ class AuthController extends Controller
 
   public function getForgot($request, $response)
   {
+    $apc_key = "{$_SERVER['SERVER_NAME']}~user:1337";
+    $tries = (int)apcu_fetch($apc_key);
+    echo $tries . "<br>";
+    die();
     return $this->view->render($response, 'auth/forgot.twig');
   }
 
@@ -69,7 +79,9 @@ class AuthController extends Controller
       ]);
 
       $reset = $reset_db->get($token);
+      $reset->token = $token;
       $reset->userid = $user['userid'];
+      $reset->type = 'password';
       $reset->save();
 
       $this->mailer->addToQueue($user['email'], 'forgot', $sys['url']['host'] . $this->router->pathFor('auth.reset', ['token' => $token]));

@@ -27,6 +27,8 @@ class Auth
 
   private $cookie_lifetime = 3600;
 
+  private $brute_tries = 5;
+
   /**
    * @param bool $userid
    * @return bool
@@ -143,6 +145,19 @@ class Auth
   }
 
   /**
+   * @param $user_id
+   * @return bool
+   */
+  public function checkBrute($user_id){
+    $apc_key = "{$_SERVER['SERVER_NAME']}~user:{$user_id}";
+    $tries = (int)apcu_fetch($apc_key);
+    if ($tries >= $this->brute_tries) {
+      return true;
+    }
+    return false;
+  }
+
+  /**
    * @param $username
    * @param $password
    * @return mixed
@@ -155,8 +170,25 @@ class Auth
       $error = 'NOUSER';
     }
 
+    if($this->checkBrute($user['userid']) && !isset($error)){
+      $error = 'BRUTE';
+      die($error);
+    }
+
+    $apc_key = "{$_SERVER['SERVER_NAME']}~user:{$user['userid']}";
+    $apc_blocked_key = "{$_SERVER['SERVER_NAME']}~user-blocked:{$user['userid']}";
+
     if (!isset($error) && !$this->checkHash($password, $user['password_hash'])) {
-      $error = 'PASSWORD';
+      $blocked = (int)apcu_fetch($apc_blocked_key) + 1;
+      $tries = (int)apcu_fetch($apc_key) + 1;
+      apcu_store($apc_key, $tries, pow(2, $blocked)*60);  # store tries for 2^(x+1) minutes: 2, 4, 8, 16, ...
+      apcu_store($apc_blocked_key, $blocked, 86400);  # store number of times blocked for 24 hours
+
+      if($tries < $this->brute_tries){
+        $error = 'PASSWORD';
+      } elseif($tries == $this->brute_tries){
+        $error = 'BLOCKED';
+      }
     }
 
     if(!isset($error)){
@@ -165,6 +197,10 @@ class Auth
 
       $return['success'] = true;
       $return['user'] = $user;
+
+      apcu_delete($apc_key);
+      apcu_delete($apc_blocked_key);
+
       return $return;
     }
 
@@ -180,6 +216,8 @@ class Auth
    */
   public function allowedToResetPassword($token)
   {
+    $reset = $this->reset_db->get($token);
+
     if(!$this->reset_db->has($token)) return false;
 
     $reset = $this->reset_db->get($token);
