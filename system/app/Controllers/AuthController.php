@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
+use App\Google\Recaptcha;
 
 class AuthController extends Controller
 {
@@ -22,6 +23,18 @@ class AuthController extends Controller
 
     if ($validation->failed()) {
       return $response->withRedirect($this->router->pathFor('auth.login'));
+    }
+
+    /*
+     * reCaptcha prüfung (falls in den settings eingeschalten)
+     */
+    Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+    Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+    if($this->config['sys']['secure']['captcha']['enabled']) {
+      if (Recaptcha::failed()) {
+        $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+        return $response->withRedirect($this->router->pathFor('auth.login'));
+      }
     }
 
     $auth = $this->auth->login(
@@ -95,6 +108,16 @@ class AuthController extends Controller
     if ($validation->failed()) {
       return $response->withRedirect($this->router->pathFor('auth.forgot'));
     }
+
+    Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+    Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+    if($this->config['sys']['secure']['captcha']['enabled']) {
+      if (Recaptcha::failed()) {
+        $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+        return $response->withRedirect($this->router->pathFor('auth.login'));
+      }
+    }
+
     $a = new \App\Models\Accounts();
     $user = $a->where(['username' => $request->getParam('username')])->first();
     if($user){
@@ -131,12 +154,36 @@ class AuthController extends Controller
       $validation = $this->validator->validate($request, [
         'username' => v::noWhitespace()->notEmpty()->usernameAvailable(),
         'mail' => v::notEmpty()->email()->emailAvailable(),
-        'password' => v::noWhitespace()->notEmpty()->strengthPassword()
+        'password' => v::noWhitespace()->notEmpty()->strengthPassword(),
+        'password_retry' => v::equals($request->getParam('password'))
       ]);
 
       if ($validation->failed()) {
         return $response->withRedirect($this->router->pathFor('auth.register'));
       }
+
+      Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+      Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+      if($this->config['sys']['secure']['captcha']['enabled']) {
+        if (Recaptcha::failed()) {
+          $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+          return $response->withRedirect($this->router->pathFor('auth.login'));
+        }
+      }
+
+      $token = $this->auth->createToken(15);
+
+      $a = new \App\Models\Accounts();
+      $user = $a->get($token);
+      $user->userid = $token;
+      $user->username = $request->getParam('username');
+      $user->email = $request->getParam('mail');
+      $user->password_hash = $this->auth->createHash($request->getParam('password'));
+      $user->role = ($a->count() == 0) ? 'admin' : 'user';
+      $user->save();
+
+      $this->mailer->addToQueue($user->email, 'welcome');
+      $this->message->addInline('success', 'Account erfolgreich erstellt. Willkommen!');
     }
 
     return $response->withRedirect($this->router->pathFor('auth.login'));

@@ -18,16 +18,16 @@ $queue_db = new \Filebase\Database([
 $filelist = $queue_db->findAll();
 
 foreach($filelist as $file){
-  if($file->type == 'user'){
-    $container['mailer']->send('mails/user.twig', ['data' => $file->array] , function($message) use ($file){
+  if($file->type == 'welcome'){
+    $container['mailer']->send('mails/welcome.twig', function($message) use ($file){
       $message->to($file->to);
-      $message->subject('Dein Webadmin Login');
+      $message->subject('Account erstellt!');
       $message->from($file->from_mail);
       $message->fromName($file->from_name);
     });
   }
   elseif($file->type == 'forgot'){
-    $container['mailer']->send('mails/vergessen.twig', ['url' => $file->text] , function($message) use ($file){
+    $container['mailer']->send('mails/forgot.twig', ['url' => $file->text] , function($message) use ($file){
       $message->to($file->to);
       $message->subject('Password vergessen!');
       $message->from($file->from_mail);
@@ -35,7 +35,7 @@ foreach($filelist as $file){
     });
   }
   elseif($file->type == 'password'){
-    $container['mailer']->send('mails/passwort.twig', [] , function($message) use ($file){
+    $container['mailer']->send('mails/password.twig', [] , function($message) use ($file){
       $message->to($file->to);
       $message->subject('Password geändert!');
       $message->from($file->from_mail);

@@ -15422,32 +15422,32 @@ body.login-site {
   background: #3598dc;
 }
 
-.form-control {
+body.login-site .form-control {
   min-height: 41px;
   background: #f2f2f2;
   box-shadow: none !important;
   border: transparent;
 }
 
-.form-control:focus {
+body.login-site .form-control:focus {
   background: #e2e2e2;
 }
 
-.form-control, .form-control .btn {
+body.login-site .form-control, body.login-site .form-control .btn {
   border-radius: 2px;
 }
 
-.login-form {
-  width: 350px;
+body.login-site .login-form {
+  width: 364px;
   margin: 30px auto;
   text-align: center;
 }
 
-.login-form h2 {
+body.login-site .login-form h2 {
   margin: 10px 0 25px;
 }
 
-.login-form form {
+body.login-site .login-form form {
   color: #7a7a7a;
   border-radius: 3px;
   margin-bottom: 15px;
@@ -15456,28 +15456,32 @@ body.login-site {
   padding: 30px;
 }
 
-.login-form form a {
+body.login-site .login-form form a {
   color: #7a7a7a;
   text-decoration: none;
 }
 
-.login-form form a:hover {
+body.login-site .login-form form a:hover {
   text-decoration: underline;
 }
 
-.login-form .invalid-feedback {
+body.login-site .login-form .invalid-feedback {
   text-align: left;
 }
 
-.login-form .btn:hover, .login-form .login-form .btn:focus {
+body.login-site .login-form .g-recaptcha {
+  margin-bottom: 1rem;
+}
+
+body.login-site .login-form .btn:hover, body.login-site .login-form .login-form .btn:focus {
   background: #2389cd;
 }
 
-.login-form a {
+body.login-site .login-form a {
   color: #fff;
   text-decoration: underline;
 }
 
-.login-form a:hover {
+body.login-site .login-form a:hover {
   text-decoration: none;
 }

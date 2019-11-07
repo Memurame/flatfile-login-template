@@ -25,8 +25,8 @@ secure:
     force: false
   captcha:
     enabled: false
-    type: '2v'
-    url: url
+    version: '2'
+    url: https://www.google.com/recaptcha/api/siteverify
     key:
       private: 'PRIVATEKEY'
       public: 'PUBLICKEY'

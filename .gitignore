@@ -23,10 +23,6 @@ logs
 data/*
 !data/.gitkeep
 
-!data/accounts
-data/accounts/*
-!data/accounts/.gitkeep
-
 !data/config
 data/config/*
 !data/config/.gitkeep

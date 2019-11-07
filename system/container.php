@@ -12,6 +12,12 @@ $container['config'] = function($container) {
   }
   $config['sys'] = Yaml::parseFile(FILE_SETTINGS);
 
+  if($config['sys']['secure']['ssl']['force'])
+  {
+    header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
+    exit();
+  }
+
   $config['backgroundTask'] = (defined('STDIN')) ? true : false;
   if(!$config['backgroundTask']){
     $config['url']['root'] = rtrim(str_ireplace('index.php', '', $container['request']->getUri()->getBasePath()), '/');
@@ -50,8 +56,7 @@ $container['mailer'] = function ($container) {
 };
 
 $container['auth'] = function($container) {
-  $auth =  new \App\Auth\Auth;
-  return $auth;
+  return  new \App\Auth\Auth;
 };
 
 
@@ -108,7 +113,7 @@ $container['notFoundHandler'] = function ($container) {
 
 $container['notAllowedHandler'] = function ($container) {
   return function ($request, $response, $methods) use ($container) {
-    return $container['response']
-      ->withRedirect($container->router->pathFor('auth.login'));
+    return $container['view']
+      ->render($response, 'error/405.twig');
   };
 };
