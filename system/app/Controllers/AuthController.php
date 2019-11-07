@@ -3,13 +3,13 @@
 namespace App\Controllers;
 
 use App\Controllers\Controller;
-use Crunz\Schedule;
 use Respect\Validation\Validator as v;
 
 class AuthController extends Controller
 {
 	public function getLogin($request, $response)
   {
+
     return $this->view->render($response, 'auth/login.twig');
   }
 
@@ -30,10 +30,21 @@ class AuthController extends Controller
     );
 
     if (! $auth['success']) {
+      $u = new \App\Models\Accounts();
+      $user = $u->where(['username' => $request->getParam('username')])->first();
       if($auth['reason'] == 'PASSWORD'){
-        die('Falsches Password');
+        $this->mailer->addToQueue($user['email'], 'password_error', ['ip' => $_SERVER['REMOTE_ADDR']]);
       } elseif($auth['reason'] == 'BLOCKED'){
-        die('Account ist nun gesperrt');
+        $token = $this->auth->createToken(15);
+
+        $r = new \App\Models\Reset();
+        $reset = $r->get($token);
+        $reset->token = $token;
+        $reset->userid = $user['userid'];
+        $reset->type = 'brute';
+        $reset->save();
+
+        $this->mailer->addToQueue($user['email'], 'brute', $this->config['url']['host'] . $this->router->pathFor('auth.brute', ['token' => $token]));
       }
 
       $this->message->addInline('danger', 'Die Login Daten sind nicht korrekt!');
@@ -49,12 +60,29 @@ class AuthController extends Controller
     return $response->withRedirect($this->container->router->pathFor('auth.login'));
   }
 
+  public function getBruteReset($request, $response, $args){
+    $r = new \App\Models\Reset();
+    $reset = $r->where('token', '=', $args['token'])
+      ->andWhere('type', '=', 'brute')
+      ->first();
+
+    if($reset){
+      $apc_key = "{$_SERVER['SERVER_NAME']}~user:{$reset['userid']}";
+      $apc_blocked_key = "{$_SERVER['SERVER_NAME']}~user-blocked:{$reset['userid']}";
+      apcu_delete($apc_key);
+      apcu_delete($apc_blocked_key);
+
+      $r = new \App\Models\Reset();
+      $r->where(['token' => $reset['token'], 'type' => 'brute'])->delete();
+
+      $this->message->addInline('success', 'Dein Account ist nun freigeschalten!');
+    }
+
+    return $response->withRedirect($this->container->router->pathFor('auth.login'));
+  }
+
   public function getForgot($request, $response)
   {
-    $apc_key = "{$_SERVER['SERVER_NAME']}~user:1337";
-    $tries = (int)apcu_fetch($apc_key);
-    echo $tries . "<br>";
-    die();
     return $this->view->render($response, 'auth/forgot.twig');
   }
 
@@ -67,18 +95,15 @@ class AuthController extends Controller
     if ($validation->failed()) {
       return $response->withRedirect($this->router->pathFor('auth.forgot'));
     }
-    $user = $this->auth->getUserDB()->where(['username' => $request->getParam('username')])->first();
+    $a = new \App\Models\Accounts();
+    $user = $a->where(['username' => $request->getParam('username')])->first();
     if($user){
 
       $token = $this->auth->createToken(15);
       $sys = $this->config;
 
-      $reset_db = new \Filebase\Database([
-        'dir' => PATH_ROOT . DIR_TEMP . DIR_TEMP_RESET,
-        'format' => \Filebase\Format\Yaml::class,
-      ]);
-
-      $reset = $reset_db->get($token);
+      $r = new \App\Models\Reset();
+      $reset = $r->get($token);
       $reset->token = $token;
       $reset->userid = $user['userid'];
       $reset->type = 'password';
@@ -104,10 +129,9 @@ class AuthController extends Controller
   {
     if($this->config['sys']['system']['register']){
       $validation = $this->validator->validate($request, [
-        'username' => v::noWhitespace()->notEmpty(),
-        'vorname' => v::notEmpty(),
-        'nachname' => v::notEmpty(),
-        'password' => v::noWhitespace()->notEmpty()
+        'username' => v::noWhitespace()->notEmpty()->usernameAvailable(),
+        'mail' => v::notEmpty()->email()->emailAvailable(),
+        'password' => v::noWhitespace()->notEmpty()->strengthPassword()
       ]);
 
       if ($validation->failed()) {
@@ -121,8 +145,6 @@ class AuthController extends Controller
   public function getReset($request, $response, $args)
   {
     if(!$this->auth->allowedToResetPassword($args['token'])){
-
-      $this->message->addInline('danger', 'Keine Berechtigung zum Passwort zurücksetzen.');
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
 
@@ -148,7 +170,7 @@ class AuthController extends Controller
 
     // Prüfen ob der User zum Token noch existiert oder nicht
     // Wenn dieser nicht existiert, abbrechen.
-    $user = $this->auth->user($reset->userid);
+    $user = $this->auth->user($reset['userid']);
 
     if(!$user){
       return $response->withRedirect($this->router->pathFor('auth.forget'));
@@ -157,7 +179,7 @@ class AuthController extends Controller
     // Neues Passwort verschlüsseln
     $password = $this->auth->createHash($request->getParam('password'));
 
-    // E-Mail Benachrichtigung wer warteschlange hinzufügen
+    // E-Mail Benachrichtigung der warteschlange hinzufügen
     $this->mailer->addToQueue($user->email, 'password');
 
     // Neues und verschlüsseltes Passwort speichern
@@ -165,7 +187,8 @@ class AuthController extends Controller
     $user->save();
 
     // Token das zum ändern des Passwortes berechtigt löschen
-    $this->auth->getResetDB()->where(['userid' => $user->userid])->delete();
+    $r = new \App\Models\Reset();
+    $r->where(['token' => $reset['token'], 'type' => 'password'])->delete();
 
     // Meldung anzeigen und alle Sessions des users löschen,
     // anschliessend auf die Login seite leiten

@@ -6,17 +6,25 @@
       {{ csrf.field | raw }}
       <h2 class="text-center">Registrieren</h2>
       {% include 'message/inline.twig' %}
-      <div class="form-group has-error">
-        <input type="text" class="form-control" name="username" placeholder="Benutzername" required="required" value="{{ old.username }}">
-      </div>
-      <div class="form-group has-error">
-        <input type="text" class="form-control" name="vorname" placeholder="Vorname" required="required" value="{{ old.vorname }}">
-      </div>
-      <div class="form-group has-error">
-        <input type="text" class="form-control" name="name" placeholder="Name" required="required" value="{{ old.name }}">
+      <div class="form-group">
+        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="Benutzername" required="required" value="{{ old.username }}">
+        <div class="invalid-feedback">{{ errors.username | first }}</div>
       </div>
       <div class="form-group">
-        <input type="password" class="form-control" name="password" placeholder="Passwort" required="required">
+        <input type="text" class="form-control {{ errors.mail ? ' is-invalid' : '' }}" name="mail" placeholder="Mail" required="required" value="{{ old.mail }}">
+        <div class="invalid-feedback">{{ errors.mail | first }}</div>
+      </div>
+      <div class="form-group">
+        <input type="password" class="form-control {{ errors.password ? ' is-invalid' : '' }}" name="password" placeholder="Passwort" required="required">
+        <div class="invalid-feedback">
+          Das Password muss folgende kriterien erfüllen:<br>
+          <ul>
+            <li>Grossbuchstaben</li>
+            <li>Kleinbuchstaben</li>
+            <li>Zahlen</li>
+            <li>Mindestens 8 Zeichen lang</li>
+          </ul>
+        </div>
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-lg btn-block">Absenden</button>

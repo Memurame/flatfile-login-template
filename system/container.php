@@ -51,9 +51,6 @@ $container['mailer'] = function ($container) {
 
 $container['auth'] = function($container) {
   $auth =  new \App\Auth\Auth;
-  $auth->setTokenDir(PATH_ROOT . DIR_TEMP . DIR_TEMP_TOKEN);
-  $auth->setResetDir(PATH_ROOT . DIR_TEMP . DIR_TEMP_RESET);
-  $auth->setUserDir(PATH_ACCOUNTS);
   return $auth;
 };
 

@@ -7,26 +7,29 @@ use App\Controllers\Controller;
 class Auth
 {
 
+  /**
+   * @var object
+   */
   private $user;
 
-  private $user_dir;
-
-  private $user_db;
-
-  private $reset_dir;
-
-  private $reset_db;
-
+  /**
+   * @var object
+   */
   private $token;
 
-  private $token_dir;
-
-  private $token_db;
-
+  /**
+   * @var string
+   */
   private $cookie_name = "flatlogin";
 
+  /**
+   * @var int
+   */
   private $cookie_lifetime = 3600;
 
+  /**
+   * @var int
+   */
   private $brute_tries = 5;
 
   /**
@@ -34,65 +37,19 @@ class Auth
    * @return bool
    */
   public function user($userid = false){
+    $a = new \App\Models\Accounts();
     if($userid){
-      $user = ($this->user_db->has($userid)) ? $this->user_db->get($userid) : false;
+      $user = ($a->has($userid)) ? $a->get($userid) : false;
     } else {
-      $user = $this->user_db->get($this->token->userid);
+      $user = $a->get($this->token->userid);
     }
 
     return (!$user) ? false : $user;
   }
 
   /**
-   * @param $dir
-   * @throws \Filebase\Filesystem\FilesystemException
+   * @throws \Exception
    */
-  public function setTokenDir($dir){
-    $this->token_dir = $dir;
-    $this->token_db = new \Filebase\Database([
-      'dir' => $this->token_dir,
-      'format' => \Filebase\Format\Yaml::class,
-    ]);
-  }
-
-  /**
-   * @param $dir
-   * @throws \Filebase\Filesystem\FilesystemException
-   */
-  public function setResetDir($dir){
-    $this->reset_dir = $dir;
-    $this->reset_db = new \Filebase\Database([
-      'dir' => $this->reset_dir,
-      'format' => \Filebase\Format\Yaml::class,
-    ]);
-  }
-
-  /**
-   * @param $dir
-   * @throws \Filebase\Filesystem\FilesystemException
-   */
-  public function setUserDir($dir){
-    $this->user_dir = $dir;
-    $this->user_db = new \Filebase\Database([
-      'dir' => $this->user_dir,
-      'format' => \Filebase\Format\Yaml::class,
-    ]);
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getUserDB(){
-    return $this->user_db;
-  }
-
-  /**
-   * @return mixed
-   */
-  public function getResetDB(){
-    return $this->reset_db;
-  }
-
   public function updateAuthToken(){
     $this->token->token = $this->createToken(64);
     $this->token->save();
@@ -107,8 +64,9 @@ class Auth
   public function getAuthToken(){
     if(!isset($_COOKIE[$this->cookie_name . '_identifier']) || !isset($_COOKIE[$this->cookie_name . '_token'])) return false;
 
-    if($this->token_db->has($_COOKIE[$this->cookie_name . '_identifier'])){
-      $token = $this->token_db->get($_COOKIE[$this->cookie_name . '_identifier']);
+    $t = new \App\Models\Token();
+    if($t->has($_COOKIE[$this->cookie_name . '_identifier'])){
+      $token = $t->get($_COOKIE[$this->cookie_name . '_identifier']);
 
       if($token->token == $_COOKIE[$this->cookie_name . '_token']){
         return $token;
@@ -125,7 +83,8 @@ class Auth
 
     $created_token = $this->createToken(15);
 
-    $token = $this->token_db->get($created_token);
+    $t = new \App\Models\Token();
+    $token = $t->get($created_token);
     $token->token = $this->createToken(64);
     $token->identifier = $created_token;
     $token->userid = $userid;
@@ -140,7 +99,8 @@ class Auth
    */
   public function deleteAllUserToken($userid)
   {
-    $this->token_db->where(['userid' => $userid])->delete();
+    $t = new \App\Models\Token();
+    $t->where(['userid' => $userid])->delete();
     $this->logout();
   }
 
@@ -165,14 +125,14 @@ class Auth
    */
   public function login($username, $password){
 
-    $user = $this->user_db->where(['username' => $username])->first();
+    $a = new \App\Models\Accounts();
+    $user = $a->where(['username' => $username])->first();
     if (!$user && !isset($error)) {
       $error = 'NOUSER';
     }
 
     if($this->checkBrute($user['userid']) && !isset($error)){
       $error = 'BRUTE';
-      die($error);
     }
 
     $apc_key = "{$_SERVER['SERVER_NAME']}~user:{$user['userid']}";
@@ -216,13 +176,12 @@ class Auth
    */
   public function allowedToResetPassword($token)
   {
-    $reset = $this->reset_db->get($token);
+    $r = new \App\Models\Reset();
+    $reset = $r->where('token', '=', $token)
+      ->andWhere('type', '=', 'password')
+      ->first();
 
-    if(!$this->reset_db->has($token)) return false;
-
-    $reset = $this->reset_db->get($token);
-
-    return ($this->user($reset->userid)) ? $reset : false;
+    return ($this->user($reset['userid'])) ? $reset : false;
 
   }
 
@@ -231,8 +190,10 @@ class Auth
    */
   public function logout()
   {
-    if(isset($_COOKIE[$this->cookie_name . '_identifier']) && $this->token_db->has($_COOKIE[$this->cookie_name . '_identifier'])){
-      $this->token_db->get($_COOKIE[$this->cookie_name . '_identifier'])->delete();
+    $t = new \App\Models\Token();
+    if(isset($_COOKIE[$this->cookie_name . '_identifier']) && $t->has($_COOKIE[$this->cookie_name . '_identifier'])){
+
+      $t->get($_COOKIE[$this->cookie_name . '_identifier'])->delete();
     }
     setcookie($this->cookie_name . '_identifier', '', time()-3600, '/', $_SERVER['HTTP_HOST']);
     setcookie($this->cookie_name . '_token', '', time()-3600, '/', $_SERVER['HTTP_HOST']);
@@ -241,6 +202,7 @@ class Auth
   /**
    * @param string $lvl
    * @return mixed
+   * @throws \Exception
    */
   public function check($lvl = 'user'){
 

@@ -10,6 +10,7 @@ $app->group('', function () {
   $this->post('/forgot', 'AuthController:postForgot')->setName('auth.forgot');
   $this->get('/login', 'AuthController:getLogin')->setName('auth.login');
   $this->post('/login', 'AuthController:postLogin')->setName('auth.login');
+  $this->get('/reactivate/{token}', 'AuthController:getBruteReset')->setName('auth.brute');
   $this->get('/reset/{token}', 'AuthController:getReset')->setName('auth.reset');
   $this->post('/reset/{token}', 'AuthController:postReset')->setName('auth.reset');
   $this->get('/register', 'AuthController:getRegister')->setName('auth.register');

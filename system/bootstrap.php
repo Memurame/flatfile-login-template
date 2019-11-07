@@ -21,6 +21,7 @@ $app->add(new \App\Middleware\CsrfViewMiddleware($container));
 
 //$app->add($container->csrf);
 
+v::with('App\\Validation\\Rules\\');
 
 require __DIR__ . '/routes.php';
 

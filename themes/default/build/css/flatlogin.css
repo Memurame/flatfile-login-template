@@ -15465,6 +15465,10 @@ body.login-site {
   text-decoration: underline;
 }
 
+.login-form .invalid-feedback {
+  text-align: left;
+}
+
 .login-form .btn:hover, .login-form .login-form .btn:focus {
   background: #2389cd;
 }

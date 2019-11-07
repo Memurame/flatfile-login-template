@@ -36,6 +36,9 @@ body.login-site{
       }
     }
   }
+  .invalid-feedback{
+    text-align: left;
+  }
   .btn:hover, .login-form .btn:focus {
     background: #2389cd;
   }

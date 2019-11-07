@@ -42,6 +42,22 @@ foreach($filelist as $file){
       $message->fromName($file->from_name);
     });
   }
+  elseif($file->type == 'password_error'){
+    $container['mailer']->send('mails/password_error.twig', ['data' => $file->array] , function($message) use ($file){
+      $message->to($file->to);
+      $message->subject('Fehlerhaftes Login!');
+      $message->from($file->from_mail);
+      $message->fromName($file->from_name);
+    });
+  }
+  elseif($file->type == 'brute'){
+    $container['mailer']->send('mails/brute.twig', ['url' => $file->text] , function($message) use ($file){
+      $message->to($file->to);
+      $message->subject('Account gesperrt!');
+      $message->from($file->from_mail);
+      $message->fromName($file->from_name);
+    });
+  }
 
   $file->delete();
 

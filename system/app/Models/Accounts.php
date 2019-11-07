@@ -2,25 +2,22 @@
 
 namespace App\Models;
 
-use \Filebase\Database;
-use \Filebase\Format;
-
-Class Accounts extends Database{
+Class Accounts{
 
   protected $filebase;
 
 
   public function __construct()
   {
-    $this->filebase = new Database([
+    $this->filebase = new \Filebase\Database([
       'dir' => PATH_ACCOUNTS,
-      'format' => Format\Yaml::class,
+      'format' => \Filebase\Format\Yaml::class,
     ]);
   }
 
   public function __call($method, $arguments)
   {
-    return $this->filebase->__call($method, $arguments);
+    return call_user_func_array([$this->filebase,$method],$arguments);
   }
 
 }

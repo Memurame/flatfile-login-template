@@ -6,11 +6,14 @@
       {{ csrf.field | raw }}
       <h2 class="text-center">Login</h2>
       {% include 'message/inline.twig' %}
-      <div class="form-group has-error">
-        <input type="text" class="form-control" name="username" placeholder="Benutzername" required="required" value="{{ old.username }}">
+      <div class="form-group">
+        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="Benutzername" required="required" value="{{ old.username }}">
+        <div class="invalid-feedback">{{ errors.username | first }}</div>
+
       </div>
       <div class="form-group">
-        <input type="password" class="form-control" name="password" placeholder="Passwort" required="required">
+        <input type="password" class="form-control {{ errors.password ? ' is-invalid' : '' }}" name="password" placeholder="Passwort" required="required">
+        <div class="invalid-feedback">{{ errors.password | first }}</div>
       </div>
       <div class="form-group">
         <button type="submit" class="btn btn-primary btn-lg btn-block">Anmelden</button>

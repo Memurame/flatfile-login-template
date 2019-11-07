@@ -4,7 +4,7 @@ namespace App\Models;
 
 use \Filebase\Database;
 
-Class Token extends Database{
+Class Token{
 
   protected $filebase;
 
@@ -19,7 +19,7 @@ Class Token extends Database{
 
   public function __call($method, $arguments)
   {
-    return $this->filebase->__call($method, $arguments);
+    return call_user_func_array([$this->filebase,$method],$arguments);
   }
 
 }
