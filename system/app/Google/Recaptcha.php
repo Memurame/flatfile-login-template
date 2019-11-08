@@ -38,7 +38,7 @@ class Recaptcha
   /**
    * Request from reCAPTCHA form input
    *
-   * @var
+   * @var string
    */
   private static $request;
 

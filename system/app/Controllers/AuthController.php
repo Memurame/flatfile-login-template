@@ -28,9 +28,10 @@ class AuthController extends Controller
     /*
      * reCaptcha prüfung (falls in den settings eingeschalten)
      */
-    Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
-    Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
     if($this->config['sys']['secure']['captcha']['enabled']) {
+      Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+      Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+
       if (Recaptcha::failed()) {
         $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
         return $response->withRedirect($this->router->pathFor('auth.login'));
@@ -108,10 +109,10 @@ class AuthController extends Controller
     if ($validation->failed()) {
       return $response->withRedirect($this->router->pathFor('auth.forgot'));
     }
-
-    Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
-    Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
     if($this->config['sys']['secure']['captcha']['enabled']) {
+      Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+      Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+
       if (Recaptcha::failed()) {
         $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
         return $response->withRedirect($this->router->pathFor('auth.login'));
@@ -154,17 +155,17 @@ class AuthController extends Controller
       $validation = $this->validator->validate($request, [
         'username' => v::noWhitespace()->notEmpty()->usernameAvailable(),
         'mail' => v::notEmpty()->email()->emailAvailable(),
-        'password' => v::noWhitespace()->notEmpty()->strengthPassword(),
-        'password_retry' => v::equals($request->getParam('password'))
+        'password' => v::noWhitespace()->notEmpty()->strengthPassword()
       ]);
 
       if ($validation->failed()) {
         return $response->withRedirect($this->router->pathFor('auth.register'));
       }
 
-      Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
-      Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
       if($this->config['sys']['secure']['captcha']['enabled']) {
+        Recaptcha::setKeys($this->config['sys']['secure']['captcha']['key']['private'], $this->config['sys']['secure']['captcha']['key']['public']);
+        Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
+
         if (Recaptcha::failed()) {
           $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
           return $response->withRedirect($this->router->pathFor('auth.login'));

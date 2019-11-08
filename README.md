@@ -1,11 +1,16 @@
 # Flatlogin - Template
-Dies ist eine Vorlage mit einem Login-Bereich ohne Datenbank. Aufgebaut auf dem [Slim Framework](https://www.slimframework.com/).
-Ich gehe davon aus das du ein Entwickler bist und dies als Vorlage für deine Webapp benutzen möchtest.
+Dies ist eine Vorlage mit einem Login-Bereich ohne Datenbank. Aufgebaut auf dem [Slim Framework v3](https://www.slimframework.com/).
+Dieses Template habe ich als Vorlage für eine Webapp entwickelt, 
+wer diese Vorlage benutzt sollte sich daher in der Webentwicklung auskennen.
+
+Die Vorlage darf frei verwendet werden ohne angabe eines Copyrights.\
+Feedbacks und verbesserungen sind willkommen.
 
 ## Voraussetzungen
 * Composer
 * PHP 5.5.0 or newer
 * Node
+* APCu Erweiterung
 
 ## Intstallation
 * Lade dir Flatlogin herunter und entpacke dies in ein beliebiges Verzeichniss auf deinem Webserver.
@@ -14,6 +19,15 @@ Ich gehe davon aus das du ein Entwickler bist und dies als Vorlage für deine We
 ## Design / Theme
 Im Ordner `themes/` kann ein eigenes Theme erstellt werden. 
 Das `default` Theme kann als Vorlage kopiert werden und darauf aufgebaut werden.
+
+Um das Design `default` zu bearbeiten wird Node vorausgesetzt. \
+Im Ordner `themes/default` den Befehl `npm install` ausführen. 
+
+**Reihenfolge der Gulp Tasks:** \
+gulp dep-update #Läd die erforderlichen resourcen an den richtigen Ort \
+gulp build #Generiert die css und js files \
+
+Mit `gulp watch` kann anschliessend die files auf änderungen überwachen
 
 ## Configuration
 ### settings.yaml

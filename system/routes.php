@@ -6,6 +6,8 @@ $app->group('', function () {
   $this->get('/', function($request, $response){
     return $response->withRedirect($this->router->pathFor('auth.login'));
   });
+
+
   $this->get('/forgot', 'AuthController:getForgot')->setName('auth.forgot');
   $this->post('/forgot', 'AuthController:postForgot')->setName('auth.forgot');
   $this->get('/login', 'AuthController:getLogin')->setName('auth.login');
