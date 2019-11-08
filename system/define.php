@@ -14,6 +14,7 @@ define('DIR_TEMP', 'tmp/');
 define('DIR_LOG', 'logs/');
 define('DIR_SYSTEM', 'system/');
 define('DIR_CONFIG', 'config/');
+define('DIR_LOCALE', 'locale/');
 define('DIR_DATA', 'data/');
 define('DIR_THEME', 'themes/');
 define('DIR_ACCOUNTS', 'accounts/');

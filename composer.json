@@ -14,7 +14,8 @@
         "phpmailer/phpmailer": "^6.0",
         "symfony/yaml": "^4.2",
         "tmarois/filebase": "^1.0",
-        "lavary/crunz": "^2.0"
+        "lavary/crunz": "^2.0",
+        "symfony/translation": "^4.3"
     },
     "autoload": {
         "psr-4": {
