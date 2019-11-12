@@ -35,6 +35,7 @@ themes/*
 themes/default/node_modules
 themes/default/scss/core
 themes/default/js/core
+themes/default/package-lock.json
 
 
 
