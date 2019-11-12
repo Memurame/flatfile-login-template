@@ -1,4 +1,7 @@
 # Flatlogin - Template
+
+![flatlogin_screen](https://user-images.githubusercontent.com/15847494/68676863-39511780-055b-11ea-9376-d4a1e8d1704a.PNG)
+
 This is a template with a login area without a database. Built on the [Slim Framework v3](https://www.slimframework.com/).
 I have developed this template as a template for a webapp, 
 who uses this template should therefore be familiar with the web development.
