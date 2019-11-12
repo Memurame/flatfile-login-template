@@ -13,7 +13,6 @@ if (!defined('PATH_ROOT')) {
 define('DIR_TEMP', 'tmp/');
 define('DIR_LOG', 'logs/');
 define('DIR_SYSTEM', 'system/');
-define('DIR_CONFIG', 'config/');
 define('DIR_LOCALE', 'locale/');
 define('DIR_DATA', 'data/');
 define('DIR_THEME', 'themes/');
@@ -26,7 +25,6 @@ define('DIR_TEMP_RESET', 'reset/');
  * Set paths
  */
 define('PATH_SYSTEM', PATH_ROOT . DIR_SYSTEM);
-define('PATH_CONFIG', PATH_ROOT . DIR_DATA  . DIR_CONFIG);
 define('PATH_ACCOUNTS', PATH_ROOT . DIR_DATA  . DIR_ACCOUNTS);
 
 
@@ -34,4 +32,4 @@ define('PATH_ACCOUNTS', PATH_ROOT . DIR_DATA  . DIR_ACCOUNTS);
  * Set file
  */
 
-define('FILE_SETTINGS', PATH_CONFIG . 'settings.yaml');
+define('FILE_SETTINGS', PATH_ROOT . 'settings.yaml');

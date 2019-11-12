@@ -6,7 +6,7 @@ use Symfony\Component\Yaml\Yaml;
 $container['config'] = function($container) {
   if(!file_exists(FILE_SETTINGS)){
     copy(
-      PATH_SYSTEM . 'templates/' . DIR_CONFIG . 'settings.yaml',
+      PATH_SYSTEM . 'templates/config/settings.yaml',
       FILE_SETTINGS
     );
   }

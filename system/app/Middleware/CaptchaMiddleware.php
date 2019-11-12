@@ -12,7 +12,7 @@ class CaptchaMiddleware extends Middleware
 
     // return NotFound for non existent route
     if (empty($route)) {
-      throw new NotFoundException($request, $response);
+      throw new \Slim\Exception\NotFoundException($request, $response);
     }
 
     $name = explode('.', $route->getName());

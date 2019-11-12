@@ -2,4 +2,6 @@ User-agent: *
 Disallow: /tmp/
 Disallow: /system/
 Disallow: /vendor/
-Disallow: /user/
+Disallow: /data/
+Disallow: /logs/
+Disallow: /tasks/

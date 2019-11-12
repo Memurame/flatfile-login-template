@@ -1,92 +1,54 @@
 # Flatlogin - Template
-Dies ist eine Vorlage mit einem Login-Bereich ohne Datenbank. Aufgebaut auf dem [Slim Framework v3](https://www.slimframework.com/).
-Dieses Template habe ich als Vorlage für eine Webapp entwickelt, 
-wer diese Vorlage benutzt sollte sich daher in der Webentwicklung auskennen.
+This is a template with a login area without a database. Built on the [Slim Framework v3](https://www.slimframework.com/).
+I have developed this template as a template for a webapp, 
+who uses this template should therefore be familiar with the web development.
 
-Die Vorlage darf frei verwendet werden ohne angabe eines Copyrights.\
-Feedbacks und verbesserungen sind willkommen.
+The template may be used freely without stating a copyright.\
+Feedbacks and improvements are welcome.
 
-## Voraussetzungen
+## Requirements
 * Composer
 * PHP 5.5.0 or newer
-* Node
-* APCu Erweiterung
+* Node (for the default theme)
+* APCu Extension (for bruteforce protection)
 
-## Intstallation
-* Lade dir Flatlogin herunter und entpacke dies in ein beliebiges Verzeichniss auf deinem Webserver.
-* Öffne ein Terminal und führe `composer install` aus.
-
-## Design / Theme
-Im Ordner `themes/` kann ein eigenes Theme erstellt werden. 
-Das `default` Theme kann als Vorlage kopiert werden und darauf aufgebaut werden.
-
-Um das Design `default` zu bearbeiten wird Node vorausgesetzt. \
-Im Ordner `themes/default` den Befehl `npm install` ausführen. 
-
-**Reihenfolge der Gulp Tasks:** \
-gulp dep-update #Läd die erforderlichen resourcen an den richtigen Ort \
-gulp build #Generiert die css und js files \
-
-Mit `gulp watch` kann anschliessend die files auf änderungen überwachen
+## Installation
+* Download `Flatlogin` and unzip it to any directory on your webserver.
+* Open a terminal and execute `composer install`.
+* Open in the browser e.g. `http://localhost/your/project`
+* Register your first acc
 
 ## Configuration
-### settings.yaml
-```
-system:
-  title: 'Flatlogin'
-  theme: 'default'
-  register: true
-```
-**title** Dies ist der Seitentitel der im Browser angezeigt wird. \
-**theme** Theme welches verwendet wird. \
-**register** Hier wird festgelegt ob sich der Gast registrierne kann.
+In the `settings.yaml` in the root directory you can change the settings from the webapp.
 
-```
-mail:
-  from: 'mail@mail.ch'
-  from_name: FIRMA
-  host: ''
-  pass: ''
-  port: 465
-  smtp:
-    auth: 1
-    secure: ssl
-  type: sendmail
-  user: ''
-```
-**from** Absender Adresse \
-**from_name** Absender Name \
-**host** Host des Anbieters \
-**pass** Password des Accounts \
-**port** SMTP Port \
-**smtp.auth** Festlegen ob der Account eine Authentifizierung erfordert \
-**smtp.secure** Festlegen welche Sicherheit erforderlich ist \
-**type** Auswählen ob per SMTP oder per Sendmail versendet wird. \
-**user** Username des Accounts
+## Design / Theme
+You can create your own theme in the folder `themes/`. 
+The `default` theme can be copied as a template and built on it.
 
-```
-twig:
-  cache:
-    enabled: false
-```
-**enabled** Einschalten des caches.
+Node is required to handle the design `default`. \
+In the folder `themes/default` execute the command` npm install`. 
 
+**Order of gulp tasks:** \
+gulp dep-update = Load the required resources to the right place \
+gulp build = Generates the css and js files \
+
+With `gulp watch`, the files can then be monitored for changes
+
+## Cronjob
+To use cronjobs first the `crunz.yml` has to be generated. \
 ```
-secure:
-  ip:
-    enabled: false
-    allowed:
-      - '::1'
-  ssl:
-    force: false
-  captcha:
-    enabled: false
-    version: '2'
-    url: https://www.google.com/recaptcha/api/siteverify
-    key:
-      private: 'PRIVATEKEY'
-      public: 'PUBLICKEY'
+/project/vendor/bin/crunz publish:config
+The configuration file was generated successfully
 ```
-**ip.enabled** Einschalten der IP sperre
-**ip.allowed** Definieren welche IPs auf die Seite zugreifen können
-**ssl.force** https erzwingen
+As a result, a copy of the configuration file will be created within our project's root directory.
+
+To run the tasks, you only need to install an ordinary cron job (a crontab entry) which runs **every minute**, 
+and delegates the responsibility to Crunz' event runner:
+```
+* * * * * cd /project && vendor/bin/crunz schedule:run
+```
+
+For more info read the [documentation](https://github.com/lavary/crunz)
+
+## In progress or planned
+- [-] Multilanguage

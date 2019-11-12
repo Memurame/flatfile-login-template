@@ -17,15 +17,15 @@ Thumbs.db
 
 */__cache*
 
+settings.yaml
+crunz.yml
+
 logs
 !logs/.gitkeep
 
 data/*
 !data/.gitkeep
 
-!data/config
-data/config/*
-!data/config/.gitkeep
 
 tmp/*
 !tmp/.gitkeep

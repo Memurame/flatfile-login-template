@@ -33,13 +33,11 @@ RewriteRule .* index.php [L]
 
 ## Begin - Security
 # Block all direct access for these folders
-RewriteRule ^(\.git|tmp|logs|data)/(.*) error [F]
-# Block access to specific file types for these system folders
-RewriteRule ^(system|vendor)/(.*)\.(txt|xml|md|html|yaml|yml|php|pl|py|cgi|twig|sh|bat|sql)$ error [F]
+RewriteRule ^(\.git|tmp|logs|data|system|vendor|tasks)/(.*) error [F]
 # Block all direct access to files and folders beginning with a dot
 RewriteRule (^|/)\.(?!well-known) - [F]
 # Block access to specific files in the root folder
-RewriteRule ^(LICENSE\.txt|composer\.lock|composer\.json|\.htaccess|cron\.php)$ error [F]
+RewriteRule ^(LICENSE\.txt|composer\.lock|composer\.json|\.htaccess|settings\.yaml|crunz\.yml|\.DEBUG)$ error [F]
 ## End - Security
 
 </IfModule>

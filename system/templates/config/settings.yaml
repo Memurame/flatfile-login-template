@@ -1,32 +1,32 @@
 system:
-  title: 'Flatlogin'
-  theme: 'default'
-  register: true
+  title: 'Flatlogin' #This is the page title displayed in the browser
+  theme: 'default' #TTheme which is used
+  register: true #Here it is determined whether the guest can register
 mail:
-  from: 'mail@mail.ch'
-  from_name: FIRMA
-  host: ''
-  pass: ''
-  port: 465
+  from: 'mail@mail.ch' #Sender address
+  from_name: FIRMA #Sender name
+  host: '' #Host of the provider
+  pass: '' #Password of the account
+  port: 465 #SMTP port
   smtp:
-    auth: 1
-    secure: ssl
-  type: sendmail
-  user: ''
+    auth: 1 #Determine if the account requires authentication
+    secure: ssl #Determine what security is required
+  type: sendmail #Select whether to send via SMTP or sendmail
+  user: '' #Username of the account
 twig:
   cache:
-    enabled: false
+    enabled: false #Turn on the cache.
 secure:
   ip:
-    enabled: false
-    allowed:
+    enabled: false #Switch on the IP lock
+    allowed: #Define which IPs can access the page
       - '::1'
   ssl:
-    force: false
+    force: false #force https
   captcha:
-    enabled: false
-    version: '2'
+    enabled: false #enable the reCAPTCHA
+    version: '2' #choose the version (2 or 3)
     url: https://www.google.com/recaptcha/api/siteverify
     key:
-      private: 'PRIVATEKEY'
-      public: 'PUBLICKEY'
+      private: 'PRIVATEKEY' #Your private key
+      public: 'PUBLICKEY' #your public key
