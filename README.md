@@ -54,4 +54,4 @@ and delegates the responsibility to Crunz' event runner:
 For more info read the [documentation](https://github.com/lavary/crunz)
 
 ## In progress or planned
-- [-] Multilanguage
+-[ ] Multilanguage

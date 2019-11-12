@@ -1,6 +1,6 @@
 {
   "name": "flatlogin",
-  "version": "1.0.0",
+  "version": "0.9",
   "description": "Description here",
   "main": "",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Memurame/ccc.git"
+    "url": "git+https://github.com/Memurame/flatfile-login-template.git"
   },
   "author": "Tom Hirter",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Memurame/ccc/issues"
+    "url": "https://github.com/Memurame/flatfile-login-template/issues"
   },
-  "homepage": "https://github.com/Memurame/ccc#readme",
+  "homepage": "https://github.com/Memurame/flatfile-login-template#readme",
   "dependencies": {
     "bootstrap": "^4.3.1",
     "gulp": "^4.0.2",
