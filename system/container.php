@@ -4,6 +4,7 @@ use Slim\Container;
 use Symfony\Component\Yaml\Yaml;
 
 $container['config'] = function($container) {
+  // check exists settings file and copy it not
   if(!file_exists(FILE_SETTINGS)){
     copy(
       PATH_SYSTEM . 'templates/config/settings.yaml',

@@ -1,0 +1,31 @@
+login:
+  form:
+    username: 'Username'
+    password: 'Password'
+    mail: 'Mail'
+  button:
+    login: 'Login'
+    forgot: 'Reset'
+    register: 'Send'
+  link:
+    register: 'Sign up here!'
+    forgot: 'Password forgotten?'
+    back: 'back to the login'
+  text:
+    noacc: 'No account?'
+    passwordstrength: 'The password must meet the following criteria:'
+    uppercase: 'capital letter'
+    lowercase: 'lowercase letters'
+    number: 'A number'
+    length: 'at least 8 characters'
+  msg:
+    loginerror: 'The login data is not correct!'
+    reactivated: 'Your account is now unlocked!'
+    captcha: 'The captcha is not correct!'
+    acccreated: 'Account created successfully. Welcome!'
+    changepassword: 'Your password has been changed!'
+    forgot: 'If an account with this username exists, a link to reset the password will be sent to you by e-mail.'
+  title:
+    login: 'Log In'
+    forgot: 'Forgot Password'
+    register: 'to register'

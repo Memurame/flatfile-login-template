@@ -1,0 +1,32 @@
+login:
+  form:
+    username: 'Benutzername'
+    password: 'Passwort'
+    mail: 'Mail'
+  button:
+    login: 'Anmelden'
+    forgot: 'Zurücksetzen'
+    register: 'Absenden'
+  link:
+    register: 'Registriere dich hier!'
+    forgot: 'Password vergessen?'
+    back: 'zurück zum Login'
+  text:
+    noacc: 'Kein Account?'
+    passwordstrength: 'Das Passwort muss folgende kriterien erfüllen:'
+    uppercase: 'Grossbuchstaben'
+    lowercase: 'Kleinbuchstaben'
+    number: 'Eine Zahl'
+    length: 'Mindestens 8 Zeichen'
+  msg:
+    loginerror: 'Die Logindaten sind nicht korrekt!'
+    reactivated: 'Dein Account ist nun freigeschalten!'
+    captcha: 'Das Captcha ist nicht korrekt!'
+    acccreated: 'Account erfolgreich erstellt. Willkommen!'
+    changepassword: 'Dein Passwort wurde geändert!'
+    forgot: 'Sollte ein Account mit diesem Benutzernamen vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.'
+  title:
+    login: 'Anmelden'
+    forgot: 'Passwort vergessen'
+    register: 'Registrieren'
+

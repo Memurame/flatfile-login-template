@@ -2,6 +2,10 @@ system:
   title: 'Flatlogin' #This is the page title displayed in the browser
   theme: 'default' #TTheme which is used
   register: true #Here it is determined whether the guest can register
+  locale:
+    default: en
+    allowed:
+      - en
 mail:
   from: 'mail@mail.ch' #Sender address
   from_name: FIRMA #Sender name

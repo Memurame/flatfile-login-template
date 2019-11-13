@@ -5,6 +5,7 @@ namespace App\Controllers;
 use App\Controllers\Controller;
 use Respect\Validation\Validator as v;
 use App\Google\Recaptcha;
+use App\Translate\Translate;
 
 class AuthController extends Controller
 {
@@ -33,7 +34,7 @@ class AuthController extends Controller
       Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
 
       if (Recaptcha::failed()) {
-        $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+        $this->message->addInline('danger', Translate::translate('login.msg.captcha'));
         return $response->withRedirect($this->router->pathFor('auth.login'));
       }
     }
@@ -61,7 +62,7 @@ class AuthController extends Controller
         $this->mailer->addToQueue($user['email'], 'brute', $this->config['url']['host'] . $this->router->pathFor('auth.brute', ['token' => $token]));
       }
 
-      $this->message->addInline('danger', 'Die Login Daten sind nicht korrekt!');
+      $this->message->addInline('danger', Translate::translate('login.msg.loginerror'));
       return $response->withRedirect($this->router->pathFor('auth.login'));
     }
 
@@ -89,7 +90,7 @@ class AuthController extends Controller
       $r = new \App\Models\Reset();
       $r->where(['token' => $reset['token'], 'type' => 'brute'])->delete();
 
-      $this->message->addInline('success', 'Dein Account ist nun freigeschalten!');
+      $this->message->addInline('success', Translate::translate('login.msg.reactivated'));
     }
 
     return $response->withRedirect($this->container->router->pathFor('auth.login'));
@@ -114,7 +115,8 @@ class AuthController extends Controller
       Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
 
       if (Recaptcha::failed()) {
-        $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+
+        $this->message->addInline('danger', Translate::translate('login.msg.captcha'));
         return $response->withRedirect($this->router->pathFor('auth.login'));
       }
     }
@@ -136,7 +138,7 @@ class AuthController extends Controller
       $this->mailer->addToQueue($user['email'], 'forgot', $sys['url']['host'] . $this->router->pathFor('auth.reset', ['token' => $token]));
     }
 
-    $this->message->addInline('info', 'Sollte ein Account mit diesem Benutzernamen vorhanden sein, so wird dir ein Link zum zurücksetzen des Passwortes per Mail zugeschickt.');
+    $this->message->addInline('info', Translate::translate('login.msg.forgot'));
     return $response->withRedirect($this->router->pathFor('auth.forgot'));
 
   }
@@ -167,7 +169,7 @@ class AuthController extends Controller
         Recaptcha::setVersion($this->config['sys']['secure']['captcha']['version']);
 
         if (Recaptcha::failed()) {
-          $this->message->addInline('danger', 'Das Captcha ist nicht korrekt!');
+          $this->message->addInline('danger', Translate::translate('login.msg.captcha'));
           return $response->withRedirect($this->router->pathFor('auth.login'));
         }
       }
@@ -184,7 +186,7 @@ class AuthController extends Controller
       $user->save();
 
       $this->mailer->addToQueue($user->email, 'welcome');
-      $this->message->addInline('success', 'Account erfolgreich erstellt. Willkommen!');
+      $this->message->addInline('success', Translate::translate('login.msg.acccreated'));
     }
 
     return $response->withRedirect($this->router->pathFor('auth.login'));
@@ -240,7 +242,7 @@ class AuthController extends Controller
 
     // Meldung anzeigen und alle Sessions des users löschen,
     // anschliessend auf die Login seite leiten
-    $this->message->addInline('success', 'Dein Passwort wurde geändert.');
+    $this->message->addInline('success', Translate::translate('login.msg.changepassword'));
     $this->auth->deleteAllUserToken($user->userid);
     return $response->withRedirect($this->router->pathFor('auth.login'));
   }

@@ -4,18 +4,18 @@
   <div class="login-form">
     <form method="post">
       {{ csrf.field | raw }}
-      <h2 class="text-center">Passwort vergessen</h2>
+      <h2 class="text-center">{{ trans('login.title.forgot') }}</h2>
       {% include 'message/inline.twig' %}
       <div class="form-group has-error">
-        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="Benutzername" required="required">
+        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="{{ trans('login.form.username') }}" required="required">
         <div class="invalid-feedback">{{ errors.username | first }}</div>
       </div>
       {{ captcha.form|raw }}
       <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-lg btn-block">Zurücksetzen</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">{{ trans('login.button.forgot') }}</button>
       </div>
     </form>
-    <p class="text-center small"><a href="{{ path_for('auth.login') }}">zurück zum Login</a></p>
+    <p class="text-center small"><a href="{{ path_for('auth.login') }}">{{ trans('login.link.back') }}</a></p>
   </div>
 
 {% endblock %}

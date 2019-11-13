@@ -2,6 +2,7 @@
 
 namespace App\Translate;
 
+use RuntimeException;
 use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Symfony\Component\Translation\Translator;
 
@@ -15,7 +16,7 @@ class Translate
   /**
    * @var string
    */
-  private $defaultLocale = 'en';
+  private $defaultLocale;
 
   /**
    * @var string
@@ -30,7 +31,7 @@ class Translate
   /**
    * @var
    */
-  private $translator;
+  public static $translator;
 
   /**
    * @var bool
@@ -38,59 +39,90 @@ class Translate
   private $fromGet = false;
 
 
-  public function __construct($path){
+  public function __construct($path, $default = 'de'){
     $this->path = $path;
 
     $this->getAllowedLocales();
-    $this->currentLocale = $this->getCurrentLocale();
+    $this->setDefault($default);
+    $this->getCurrentLocale();
+
+    if(!file_exists($this->getFilename(true))){
+      throw new RuntimeException('No translate file found.');
+    }
 
     setcookie('language', $this->currentLocale, time()+60*60*24*180, '/', $_SERVER['HTTP_HOST']);
 
-    $this->translator = new Translator($this->currentLocale);
+    self::$translator = new Translator($this->currentLocale);
 
-    $this->translator->addLoader('yaml', new YamlFileLoader());
-    $this->translator->addResource('yaml', $this->path . '/' . $this->currentLocale . '.yaml' , $this->currentLocale);
+    self::$translator->addLoader('yaml', new YamlFileLoader());
+    self::$translator->addResource('yaml', $this->path . '/' . $this->currentLocale . '.yaml' , $this->currentLocale);
 
+  }
+
+  private function setDefault($locale){
+    $this->defaultLocale = $locale;
+  }
+
+  private function getFilename($absolute = false){
+    $filename =  $this->currentLocale . '.yaml';
+    return ($absolute)? $this->path . $filename : $filename;
   }
 
   public function fromGET(){
     return $this->fromGet;
   }
 
-  public function getTranslation(){
-
-    $return = [
-      'locale' => $this->currentLocale
-    ];
-
-    return $return;
+  public static function translate($text){
+    return self::$translator->trans($text);
   }
 
-  private function getCurrentLocale(){
-    $lng = $this->defaultLocale;
-    if(isset($_GET['locale'])) {
+  private function validateLocale($locale){
+    return (in_array($locale, $this->allowedLocales)) ? true : false;
+  }
+
+  private function setCurentLocale($locale){
+    if($this->validateLocale($locale)){
+      $this->currentLocale = $locale;
+      return $locale;
+    }
+    return false;
+  }
+
+  public function getLocale(){
+    return $this->currentLocale;
+  }
+
+  private function getCurrentLocale()
+  {
+    if (isset($_GET['locale'])) {
       $this->fromGet = true;
-      $lng = $_GET['locale'];
+      if ($this->setCurentLocale($_GET['locale'])) return $this->currentLocale;
     }
 
-    if(in_array($lng, $this->allowedLocales)){
-      return $lng;
+    if (isset($_COOKIE['language']) && in_array($_COOKIE['language'], $this->allowedLocales)) {
+      if ($this->setCurentLocale($_COOKIE['language'])) return $this->currentLocale;
     }
 
-    if(isset($_COOKIE['language']) && in_array($_COOKIE['language'], $this->allowedLocales)){
-      return $_COOKIE['language'];
-    }
-
-    $browserLang = explode(',',$_SERVER['HTTP_ACCEPT_LANGUAGE']);
+    $browserLang = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE']);
     $browserLang = substr($browserLang[0], 0, 2);
-    if (in_array($browserLang, $this->allowedLocales)) {
-      return $browserLang;
-    }
+    if ($this->setCurentLocale($browserLang)) return $this->currentLocale;
 
-    return $lng;
+    $this->setCurentLocale($this->defaultLocale);
   }
+
+  private function checkDir(){
+    if(!is_dir($this->path)){
+      $this->createDir();
+    }
+  }
+
+  private function createDir(){
+    mkdir($this->path, 0755, true);
+  }
+
 
   private function getAllowedLocales(){
+    $this->checkDir();
     $result = array();
     $cdir = scandir($this->path);
     foreach ($cdir as $key => $value)

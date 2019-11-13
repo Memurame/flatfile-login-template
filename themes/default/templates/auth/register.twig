@@ -4,34 +4,34 @@
   <div class="login-form">
     <form method="post">
       {{ csrf.field | raw }}
-      <h2 class="text-center">Registrieren</h2>
+      <h2 class="text-center">{{ trans('login.title.register') }}</h2>
       {% include 'message/inline.twig' %}
       <div class="form-group">
-        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="Benutzername" required="required" value="{{ old.username }}">
+        <input type="text" class="form-control {{ errors.username ? ' is-invalid' : '' }}" name="username" placeholder="{{ trans('login.form.username') }}" required="required" value="{{ old.username }}">
         <div class="invalid-feedback">{{ errors.username | first }}</div>
       </div>
       <div class="form-group">
-        <input type="text" class="form-control {{ errors.mail ? ' is-invalid' : '' }}" name="mail" placeholder="Mail" required="required" value="{{ old.mail }}">
+        <input type="text" class="form-control {{ errors.mail ? ' is-invalid' : '' }}" name="mail" placeholder="{{ trans('login.form.mail') }}" required="required" value="{{ old.mail }}">
         <div class="invalid-feedback">{{ errors.mail | first }}</div>
       </div>
       <div class="form-group">
-        <input type="password" class="form-control {{ errors.password ? ' is-invalid' : '' }}" name="password" placeholder="Passwort" required="required">
+        <input type="password" class="form-control {{ errors.password ? ' is-invalid' : '' }}" name="password" placeholder="{{ trans('login.form.password') }}" required="required">
         <div class="invalid-feedback">
-          Das Password muss folgende kriterien erfüllen:<br>
+          {{ trans('login.text.passwordstrength') }}<br>
           <ul>
-            <li>Grossbuchstaben</li>
-            <li>Kleinbuchstaben</li>
-            <li>Zahlen</li>
-            <li>Mindestens 8 Zeichen lang</li>
+            <li>{{ trans('login.text.uppercase') }}</li>
+            <li>{{ trans('login.text.lowercase') }}</li>
+            <li>{{ trans('login.text.number') }}</li>
+            <li>{{ trans('login.text.length') }}</li>
           </ul>
         </div>
       </div>
       {{ captcha.form|raw }}
       <div class="form-group">
-        <button type="submit" class="btn btn-primary btn-lg btn-block">Absenden</button>
+        <button type="submit" class="btn btn-primary btn-lg btn-block">{{ trans('login.button.register') }}</button>
       </div>
     </form>
-    <p class="text-center small"><a href="{{ path_for('auth.login') }}">zurück zum Login</a></p>
+    <p class="text-center small"><a href="{{ path_for('auth.login') }}">{{ trans('login.link.back') }}</a></p>
   </div>
 
 {% endblock %}

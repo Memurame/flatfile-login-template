@@ -4,6 +4,7 @@ use Respect\Validation\Validator as v;
 session_start();
 
 require_once realpath(__DIR__ ) . '/define.php';
+require_once realpath(__DIR__ ) . '/requirements.php';
 
 require_once realpath(__DIR__ . '/../') . '/vendor/autoload.php';
 

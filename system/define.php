@@ -3,7 +3,7 @@
 /*
  * Set directories
  */
-define('VERSION', '0.9');
+define('VERSION', '0.9.1');
 define('DS', '/');
 
 if (!defined('PATH_ROOT')) {
@@ -26,6 +26,7 @@ define('DIR_TEMP_RESET', 'reset/');
  */
 define('PATH_SYSTEM', PATH_ROOT . DIR_SYSTEM);
 define('PATH_ACCOUNTS', PATH_ROOT . DIR_DATA  . DIR_ACCOUNTS);
+define('PATH_LOCALE', PATH_ROOT . DIR_DATA  . DIR_LOCALE);
 
 
 /*
