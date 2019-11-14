@@ -6,6 +6,7 @@ system:
     default: en
     allowed:
       - en
+      - de
 mail:
   from: 'mail@mail.ch' #Sender address
   from_name: FIRMA #Sender name

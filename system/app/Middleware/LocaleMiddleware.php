@@ -27,8 +27,6 @@ class LocaleMiddleware extends Middleware
       return $response->withRedirect($url);
     }
 
-
-
     $this->container->view->getEnvironment()->addGlobal('locale', $translator->getLocale());
     $this->container->view->addExtension(new LocaleExtension($translator));
 

@@ -118,3 +118,4 @@ $container['notAllowedHandler'] = function ($container) {
       ->render($response, 'error/405.twig');
   };
 };
+

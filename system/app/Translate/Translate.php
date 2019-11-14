@@ -42,7 +42,7 @@ class Translate
   public function __construct($path, $default = 'de'){
     $this->path = $path;
 
-    $this->getAllowedLocales();
+    $this->listExistsLocale();
     $this->setDefault($default);
     $this->getCurrentLocale();
 
@@ -121,7 +121,7 @@ class Translate
   }
 
 
-  private function getAllowedLocales(){
+  private function listExistsLocale(){
     $this->checkDir();
     $result = array();
     $cdir = scandir($this->path);

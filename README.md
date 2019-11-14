@@ -53,5 +53,11 @@ and delegates the responsibility to Crunz' event runner:
 
 For more info read the [documentation](https://github.com/lavary/crunz)
 
+
+## Debug Mode
+By default, the debug mode is disabled and no errors are displayed. 
+In order to activate the debug mode, 
+a file with the name `.DEBUG` must be created in the root directory.
+
 ## In progress or planned
 -[ ] Multilanguage
